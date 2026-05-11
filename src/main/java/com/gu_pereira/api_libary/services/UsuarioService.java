@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.math.BigDecimal;
+
 @Service
 @RequiredArgsConstructor
 public class UsuarioService {
@@ -44,7 +46,7 @@ public class UsuarioService {
         Usuario usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new NegocioException("Usuário não encontrado"));
 
-        usuario.setSaldoDevedor(0.0);
+        usuario.setSaldoDevedor(BigDecimal.ZERO);
         usuario.setBloqueado(false); // Desbloqueia após pagamento
     }
 }

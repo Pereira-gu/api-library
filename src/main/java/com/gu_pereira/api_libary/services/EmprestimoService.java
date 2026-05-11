@@ -9,8 +9,11 @@ import com.gu_pereira.api_libary.repositories.EmprestimoRepository;
 import com.gu_pereira.api_libary.repositories.LivroRepository;
 import com.gu_pereira.api_libary.repositories.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Service
@@ -20,6 +23,15 @@ public class EmprestimoService {
     private final UsuarioRepository usuarioRepository;
     private final LivroRepository livroRepository;
     private final EmprestimoRepository emprestimoRepository;
+
+    @Value("${biblioteca.emprestimo.limite-livros:3}")
+    private int limiteLivros;
+
+    @Value("${biblioteca.emprestimo.prazo-dias:7}")
+    private int prazoDias;
+
+    @Value("${biblioteca.emprestimo.multa-diaria:2.00}")
+    private BigDecimal multaDiaria;
 
     @Transactional
     public void realizarEmprestimo(Long usuarioId, Long livroId) {
@@ -35,13 +47,13 @@ public class EmprestimoService {
         Livro livro = livroRepository.findById(livroId)
                 .orElseThrow(() -> new NegocioException("Livro não encontrado"));
 
-        // 3. Atualiza as mensagens para usar a NegocioException
-        if (usuario.getLivrosEmprestados() >= 3) {
-            throw new NegocioException("Limite de 3 livros atingido!");
+        // 3. Verifica limite de livros configurável
+        if (usuario.getLivrosEmprestados() >= limiteLivros) {
+            throw new NegocioException("Limite de " + limiteLivros + " livros atingido!");
         }
 
         if (!livro.getStatus().equals(StatusLivro.DISPONIVEL)) {
-            throw new RuntimeException("Livro indisponível!");
+            throw new NegocioException("Livro indisponível!");
         }
 
         livro.setStatus(StatusLivro.EMPRESTADO);
@@ -51,12 +63,11 @@ public class EmprestimoService {
         novoEmprestimo.setUsuario(usuario);
         novoEmprestimo.setLivro(livro);
         novoEmprestimo.setDataEmprestimo(LocalDateTime.now());
-        novoEmprestimo.setDataDevolucaoPrevista(LocalDateTime.now().plusDays(7));
+        novoEmprestimo.setDataDevolucaoPrevista(LocalDateTime.now().plusDays(prazoDias));
 
         emprestimoRepository.save(novoEmprestimo);
-
-
     }
+
     @Transactional
     public void devolverLivro(Long emprestimoId) {
         Emprestimo emprestimo = emprestimoRepository.findById(emprestimoId)
@@ -73,9 +84,9 @@ public class EmprestimoService {
         if (dataHoje.isAfter(emprestimo.getDataDevolucaoPrevista())) {
             long diasAtraso = java.time.Duration.between(emprestimo.getDataDevolucaoPrevista(), dataHoje).toDays();
             if (diasAtraso > 0) {
-                double multaCalculada = diasAtraso * 2.0; // R$ 2,00 por dia
+                BigDecimal multaCalculada = multaDiaria.multiply(BigDecimal.valueOf(diasAtraso));
                 emprestimo.setValorMulta(multaCalculada);
-                usuario.setSaldoDevedor(usuario.getSaldoDevedor() + multaCalculada);
+                usuario.setSaldoDevedor(usuario.getSaldoDevedor().add(multaCalculada));
                 usuario.setBloqueado(true); // Bloqueia automaticamente por atraso
             }
         }

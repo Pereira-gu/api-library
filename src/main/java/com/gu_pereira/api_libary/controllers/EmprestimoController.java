@@ -1,6 +1,8 @@
 package com.gu_pereira.api_libary.controllers;
 
+import com.gu_pereira.api_libary.dto.EmprestimoRequestDTO;
 import com.gu_pereira.api_libary.services.EmprestimoService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,16 +14,13 @@ public class EmprestimoController {
 
     private final EmprestimoService emprestimoService;
 
-    @PostMapping("/{usuarioId}/{livroId}")
-    public ResponseEntity<String> realizarEmprestimo(
-            @PathVariable Long usuarioId,
-            @PathVariable Long livroId) {
-
-        emprestimoService.realizarEmprestimo(usuarioId, livroId);
+    @PostMapping
+    public ResponseEntity<String> realizarEmprestimo(@RequestBody @Valid EmprestimoRequestDTO dto) {
+        emprestimoService.realizarEmprestimo(dto.usuarioId(), dto.livroId());
         return ResponseEntity.ok("Empréstimo realizado com sucesso!");
     }
 
-    @PutMapping("/devolver/{emprestimoId}")
+    @PostMapping("/{emprestimoId}/devolver")
     public ResponseEntity<String> devolverLivro(@PathVariable Long emprestimoId) {
         emprestimoService.devolverLivro(emprestimoId);
         return ResponseEntity.ok("Livro devolvido com sucesso!");

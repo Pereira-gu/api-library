@@ -2,12 +2,14 @@ package com.gu_pereira.api_libary.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "usuarios")
@@ -33,16 +35,17 @@ public class Usuario implements UserDetails { // Implementa UserDetails
     private LocalDateTime dataCriacao;
 
     //controle de limite
-
     private int livrosEmprestados = 0;
 
-    @Transient
-    private final int limiteMaximo = 3;
+    private boolean bloqueado = false;
+    
+    private BigDecimal saldoDevedor = BigDecimal.ZERO;
 
     @PrePersist
     protected void onCreate(){
         dataCriacao = LocalDateTime.now();
     }
+    
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // Por padrão, todos serão USER. Em um sistema real, você teria um campo 'role' no banco.
@@ -70,7 +73,4 @@ public class Usuario implements UserDetails { // Implementa UserDetails
 
     @Override
     public boolean isEnabled() { return true; }
-
-    private boolean bloqueado = false;
-    private double saldoDevedor = 0.0;
 }

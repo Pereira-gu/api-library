@@ -2,6 +2,8 @@ package com.gu_pereira.api_libary.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -23,5 +25,6 @@ public class Emprestimo {
     private LocalDateTime dataEmprestimo;
     private LocalDateTime dataDevolucaoPrevista;
     private LocalDateTime dataDevolucaoReal;
-    private Double valorMulta = 0.0;
+    
+    private BigDecimal valorMulta = BigDecimal.ZERO;
 }
