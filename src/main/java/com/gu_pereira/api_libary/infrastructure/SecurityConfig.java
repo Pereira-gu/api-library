@@ -33,6 +33,7 @@ public class SecurityConfig {
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()// Documentação Swagger Pública
 
                         // Rotas de ADMIN (ex: cadastrar livros)
+                        .requestMatchers(HttpMethod.GET, "/usuarios").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/livros").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/livros/**").hasRole("ADMIN")
 
