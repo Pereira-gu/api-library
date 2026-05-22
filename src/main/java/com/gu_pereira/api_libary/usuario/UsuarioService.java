@@ -25,12 +25,10 @@ public class UsuarioService {
         usuario.setNome(dto.nome());
         usuario.setEmail(dto.email());
         usuario.setCpf(dto.cpf());
-
-        // CRIPTOGRAFIA AQUI: Nunca salve texto puro!
         usuario.setSenha(passwordEncoder.encode(dto.senha()));
+        usuario.setRole(Role.ROLE_USER);
 
         Usuario salvo = usuarioRepository.save(usuario);
-
         return new UsuarioResponseDTO(salvo);
     }
 

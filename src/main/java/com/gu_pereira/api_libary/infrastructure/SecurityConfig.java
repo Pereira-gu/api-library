@@ -30,10 +30,17 @@ public class SecurityConfig {
                         // Rotas Públicas (Cadastro e Login)
                         .requestMatchers(HttpMethod.POST, "/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
-                        // Documentação Swagger Pública
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
-                        // Todas as outras exigem Token JWT
-                        .anyRequest().authenticated()
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()// Documentação Swagger Pública
+
+                        // Rotas de ADMIN (ex: cadastrar livros)
+                        .requestMatchers(HttpMethod.POST, "/livros").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/livros/**").hasRole("ADMIN")
+
+                        // Rotas de USER (ex: pegar livro emprestado)
+                        .requestMatchers(HttpMethod.POST, "/emprestimos/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.GET, "/livros/disponiveis").hasRole("USER")
+
+                        .anyRequest().authenticated()// Todas as outras exigem Token JWT
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

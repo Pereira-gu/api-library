@@ -33,6 +33,9 @@ public class Usuario implements UserDetails {
     @Column(nullable = false)
     private String senha;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     private LocalDateTime dataCriacao;
 
     private int livrosEmprestados = 0;
@@ -72,7 +75,7 @@ public class Usuario implements UserDetails {
     
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
     @Override
