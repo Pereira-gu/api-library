@@ -1,4 +1,4 @@
-package com.gu_pereira.api_libary.dto;
+package com.gu_pereira.api_libary.emprestimo;
 
 import jakarta.validation.constraints.NotNull;
 

@@ -1,6 +1,6 @@
 package com.gu_pereira.api_libary.infrastructure;
 
-import com.gu_pereira.api_libary.repositories.UsuarioRepository;
+import com.gu_pereira.api_libary.usuario.UsuarioRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

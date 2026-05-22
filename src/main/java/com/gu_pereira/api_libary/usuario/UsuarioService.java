@@ -1,10 +1,6 @@
-package com.gu_pereira.api_libary.services;
+package com.gu_pereira.api_libary.usuario;
 
-import com.gu_pereira.api_libary.dto.UsuarioRequestDTO;
-import com.gu_pereira.api_libary.dto.UsuarioResponseDTO;
 import com.gu_pereira.api_libary.infrastructure.exceptions.NegocioException;
-import com.gu_pereira.api_libary.model.Usuario;
-import com.gu_pereira.api_libary.repositories.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,10 +31,7 @@ public class UsuarioService {
 
         Usuario salvo = usuarioRepository.save(usuario);
 
-        return new UsuarioResponseDTO(
-                salvo.getId(), salvo.getNome(), salvo.getEmail(),
-                salvo.getDataCriacao(), salvo.getLivrosEmprestados()
-        );
+        return new UsuarioResponseDTO(salvo);
     }
 
     @Transactional

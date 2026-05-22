@@ -1,11 +1,2 @@
-package com.gu_pereira.api_libary.dto;
-
-import java.time.LocalDateTime;
-
-public record ErrorResponseDTO(
-        LocalDateTime timestamp,
-        int status,
-        String error,
-        String message,
-        String path
-) {}
+// Este arquivo não é mais necessário e pode ser removido.
+// A classe de DTO de erro foi movida para com.gu_pereira.api_libary.infrastructure.dto

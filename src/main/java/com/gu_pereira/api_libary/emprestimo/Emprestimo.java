@@ -1,5 +1,7 @@
-package com.gu_pereira.api_libary.model;
+package com.gu_pereira.api_libary.emprestimo;
 
+import com.gu_pereira.api_libary.livro.Livro;
+import com.gu_pereira.api_libary.usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.Data;
 

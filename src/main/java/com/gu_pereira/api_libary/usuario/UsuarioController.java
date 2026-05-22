@@ -1,8 +1,5 @@
-package com.gu_pereira.api_libary.controllers;
+package com.gu_pereira.api_libary.usuario;
 
-import com.gu_pereira.api_libary.dto.UsuarioRequestDTO;
-import com.gu_pereira.api_libary.dto.UsuarioResponseDTO;
-import com.gu_pereira.api_libary.services.UsuarioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

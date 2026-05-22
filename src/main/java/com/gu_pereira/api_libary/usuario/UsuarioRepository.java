@@ -1,6 +1,5 @@
-package com.gu_pereira.api_libary.repositories;
+package com.gu_pereira.api_libary.usuario;
 
-import com.gu_pereira.api_libary.model.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.Optional;

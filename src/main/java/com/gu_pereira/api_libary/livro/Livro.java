@@ -1,5 +1,6 @@
-package com.gu_pereira.api_libary.model;
+package com.gu_pereira.api_libary.livro;
 
+import com.gu_pereira.api_libary.infrastructure.exceptions.NegocioException;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -25,4 +26,19 @@ public class Livro {
     private StatusLivro status = StatusLivro.DISPONIVEL;
 
     private String categoria;
+
+    public void validarSePodeSerEmprestado() {
+        if (status != StatusLivro.DISPONIVEL) {
+            throw new NegocioException("Livro indisponível!");
+        }
+    }
+
+    public void emprestar() {
+        validarSePodeSerEmprestado();
+        this.status = StatusLivro.EMPRESTADO;
+    }
+
+    public void devolver() {
+        this.status = StatusLivro.DISPONIVEL;
+    }
 }

@@ -1,5 +1,6 @@
-package com.gu_pereira.api_libary.model;
+package com.gu_pereira.api_libary.usuario;
 
+import com.gu_pereira.api_libary.infrastructure.exceptions.NegocioException;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,7 +15,7 @@ import java.util.List;
 @Entity
 @Table(name = "usuarios")
 @Data
-public class Usuario implements UserDetails { // Implementa UserDetails
+public class Usuario implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,7 +35,6 @@ public class Usuario implements UserDetails { // Implementa UserDetails
 
     private LocalDateTime dataCriacao;
 
-    //controle de limite
     private int livrosEmprestados = 0;
 
     private boolean bloqueado = false;
@@ -45,28 +45,51 @@ public class Usuario implements UserDetails { // Implementa UserDetails
     protected void onCreate(){
         dataCriacao = LocalDateTime.now();
     }
+
+    public void validarSePodeEmprestar(int limiteLivros) {
+        if (isBloqueado()) {
+            throw new NegocioException("Usuário bloqueado! Regularize suas multas ou atrasos.");
+        }
+        if (getLivrosEmprestados() >= limiteLivros) {
+            throw new NegocioException("Limite de " + limiteLivros + " livros atingido!");
+        }
+    }
+
+    public void registrarEmprestimo() {
+        this.livrosEmprestados++;
+    }
+
+    public void registrarDevolucao() {
+        if (this.livrosEmprestados > 0) {
+            this.livrosEmprestados--;
+        }
+    }
+
+    public void aplicarMulta(BigDecimal valorMulta) {
+        this.saldoDevedor = this.saldoDevedor.add(valorMulta);
+        this.bloqueado = true;
+    }
     
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Por padrão, todos serão USER. Em um sistema real, você teria um campo 'role' no banco.
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
     @Override
     public String getPassword() {
-        return senha; // Retorna a senha criptografada
+        return senha;
     }
 
     @Override
     public String getUsername() {
-        return email; // O email será o nosso "username" para login
+        return email;
     }
 
     @Override
     public boolean isAccountNonExpired() { return true; }
 
     @Override
-    public boolean isAccountNonLocked() { return true; }
+    public boolean isAccountNonLocked() { return !bloqueado; }
 
     @Override
     public boolean isCredentialsNonExpired() { return true; }

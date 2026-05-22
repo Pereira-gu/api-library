@@ -1,9 +1,6 @@
-package com.gu_pereira.api_libary.services;
+package com.gu_pereira.api_libary.livro;
 
 import com.gu_pereira.api_libary.infrastructure.exceptions.NegocioException;
-import com.gu_pereira.api_libary.model.Livro;
-import com.gu_pereira.api_libary.model.StatusLivro;
-import com.gu_pereira.api_libary.repositories.LivroRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,9 +17,7 @@ public class LivroService {
     }
 
     public List<Livro> listarDisponiveis() {
-        return livroRepository.findAll().stream()
-                .filter(l -> l.getStatus().equals(StatusLivro.DISPONIVEL))
-                .toList();
+        return livroRepository.findByStatus(StatusLivro.DISPONIVEL);
     }
 
     @Transactional

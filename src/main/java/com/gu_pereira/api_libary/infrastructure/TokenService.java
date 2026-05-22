@@ -2,7 +2,7 @@ package com.gu_pereira.api_libary.infrastructure;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.gu_pereira.api_libary.model.Usuario;
+import com.gu_pereira.api_libary.usuario.Usuario;
 import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.LocalDateTime;

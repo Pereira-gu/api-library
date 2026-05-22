@@ -1,14 +1,11 @@
-package com.gu_pereira.api_libary.controllers;
+package com.gu_pereira.api_libary.livro;
 
-import com.gu_pereira.api_libary.model.Livro;
-import com.gu_pereira.api_libary.services.LivroService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import com.gu_pereira.api_libary.dto.LivroRequestDTO;
 
 @RestController
 @RequestMapping("/livros")

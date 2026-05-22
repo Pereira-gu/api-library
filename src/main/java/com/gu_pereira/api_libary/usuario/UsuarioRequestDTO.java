@@ -1,4 +1,4 @@
-package com.gu_pereira.api_libary.dto;
+package com.gu_pereira.api_libary.usuario;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
