@@ -49,4 +49,10 @@ public class UsuarioService {
                 .map(UsuarioResponseDTO::new)
                 .collect(Collectors.toList());
     }
+
+    public UsuarioResponseDTO buscarPorId(Long id) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new NegocioException("Usuário não encontrado com o ID: " + id));
+        return new UsuarioResponseDTO(usuario);
+    }
 }

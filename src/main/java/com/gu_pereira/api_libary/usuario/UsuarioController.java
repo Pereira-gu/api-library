@@ -26,4 +26,10 @@ public class UsuarioController {
         List<UsuarioResponseDTO> usuarios = usuarioService.listarTodos();
         return ResponseEntity.ok(usuarios);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UsuarioResponseDTO> buscarUsuarioPorId(@PathVariable Long id) {
+        UsuarioResponseDTO usuario = usuarioService.buscarPorId(id);
+        return ResponseEntity.ok(usuario);
+    }
 }
