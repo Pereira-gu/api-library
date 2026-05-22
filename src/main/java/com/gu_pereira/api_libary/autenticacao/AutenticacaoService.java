@@ -1,6 +1,6 @@
-package com.gu_pereira.api_libary.services;
+package com.gu_pereira.api_libary.autenticacao;
 
-import com.gu_pereira.api_libary.repositories.UsuarioRepository;
+import com.gu_pereira.api_libary.usuario.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

@@ -1,7 +1,5 @@
-package com.gu_pereira.api_libary.controllers;
+package com.gu_pereira.api_libary.emprestimo;
 
-import com.gu_pereira.api_libary.dto.EmprestimoRequestDTO;
-import com.gu_pereira.api_libary.services.EmprestimoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

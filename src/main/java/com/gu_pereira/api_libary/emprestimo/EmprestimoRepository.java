@@ -1,6 +1,5 @@
-package com.gu_pereira.api_libary.repositories;
+package com.gu_pereira.api_libary.emprestimo;
 
-import com.gu_pereira.api_libary.model.Emprestimo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,14 +1,12 @@
-package com.gu_pereira.api_libary.controllers;
+package com.gu_pereira.api_libary.livro;
 
-import com.gu_pereira.api_libary.model.Livro;
-import com.gu_pereira.api_libary.services.LivroService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import com.gu_pereira.api_libary.dto.LivroRequestDTO;
 
 @RestController
 @RequestMapping("/livros")
@@ -18,15 +16,15 @@ public class LivroController {
     private final LivroService livroService;
 
     @PostMapping
-    public ResponseEntity<Livro> salvar(@RequestBody @Valid LivroRequestDTO dto) {
-        // Converte DTO para Entity antes de enviar ao Service
+    public ResponseEntity<LivroResponseDTO> salvar(@RequestBody @Valid LivroRequestDTO dto) {
         Livro livro = new Livro();
         livro.setTitulo(dto.titulo());
         livro.setAutor(dto.autor());
         livro.setIsbn(dto.isbn());
         livro.setCategoria(dto.categoria());
 
-        return ResponseEntity.ok(livroService.salvar(livro));
+        Livro livroSalvo = livroService.salvar(livro);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new LivroResponseDTO(livroSalvo));
     }
 
     @GetMapping("/disponiveis")
