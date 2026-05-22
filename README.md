@@ -1,76 +1,98 @@
-# 📚 Library API Management System
+# 📚 API de Gerenciamento de Biblioteca
 
-![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white)
-![Spring](https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
-![MySQL](https://img.shields.io/badge/mysql-%2300f.svg?style=for-the-badge&logo=mysql&logoColor=white)
-![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
-![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Java](https://img.shields.io/badge/Language-Java-orange.svg)](https://www.java.com/)
+[![Spring Boot](https://img.shields.io/badge/Framework-Spring_Boot-green.svg)](https://spring.io/projects/spring-boot)
+[![Docker](https://img.shields.io/badge/Infra-Docker-blue.svg)](https://www.docker.com/)
 
-Sistema de backend profissional para gerenciamento de bibliotecas, desenvolvido com **Java 21** e **Spring Boot 3**. O projeto implementa regras de negócio complexas, segurança robusta com JWT e está totalmente preparado para escala com Docker.
-
----
-
-## 🏗️ Arquitetura do Sistema
-
-O projeto foi desenhado seguindo padrões modernos de desenvolvimento, garantindo desacoplamento e segurança em todas as camadas.
-
-### ⚙️ Arquitetura Técnica
-Visão do fluxo da requisição, desde o cliente até a persistência no banco de dados, orquestrada por containers Docker.
-![Arquitetura Técnica](img/excalidraw.png)
-
+Uma API REST de alta performance para o gerenciamento completo de bibliotecas, construída com foco em **boas práticas de engenharia de software**, **segurança robusta** e **validação rigorosa de regras de negócio**.
 
 ---
 
-## 🚀 Funcionalidades Principais
+## 🏗️ Arquitetura e Destaques Técnicos
 
-### 🔐 Segurança
-* **Autenticação Stateless**: Implementação de JWT (JSON Web Token) para controle de sessão.
-* **Proteção de Camada**: Filtro customizado para validação de token em todas as rotas protegidas.
-* **Criptografia**: Senhas de usuários são protegidas com algoritmos de Hash BCrypt.
+O sistema foi desenhado para ser desacoplado, escalável e seguro, utilizando padrões modernos do ecossistema Spring com **Java 21**.
 
-### ⚖️ Regras de Negócio
-* **Limite de Empréstimos**: Trava de segurança que impede um usuário de ter mais de 3 livros simultaneamente.
-* **Gestão de Multas**: Cálculo automático de taxas por atraso na devolução.
-* **Bloqueio de Inadimplentes**: Usuários com multas pendentes são impedidos de realizar novos empréstimos.
+### 🛡️ Fluxo de Segurança com JWT
+O núcleo da segurança da API. Nenhuma requisição a rotas protegidas é processada sem antes passar por um filtro de validação customizado, que garante a autenticidade e a autorização do usuário.
+*   **Stateless:** A autenticação é 100% sem estado, ideal para arquiteturas distribuídas.
+*   **Controle de Acesso:** O token carrega a `role` do usuário (`ADMIN` ou `USER`), permitindo um controle de acesso granular nos endpoints.
 
----
-
-## 📊 Visualização e Testes
-
-### Documentação Interativa (Swagger)
-Interface para testes de endpoints com suporte nativo a Bearer Authentication (JWT).
-![Swagger UI](img/swagger.png)
-
-### Garantia de Qualidade (Testes Unitários)
-Suíte de testes automatizados garantindo a integridade da lógica de negócio e regras de validação.
-![Testes Automatizados](img/test.png)
+<p align="center">
+  <img src="img/excalidraw.png" width="750" alt="Arquitetura Técnica" />
+</p>
 
 ---
 
-## 🐳 Como Executar
+### 💼 Lógica de Negócio Transacional
+O sistema vai além de um simples CRUD, implementando regras de negócio complexas de forma segura dentro de transações atômicas.
+*   **Integridade Garantida:** Operações críticas como `realizarEmprestimo` são anotadas com `@Transactional`. Se qualquer etapa falhar (ex: o livro fica indisponível no último segundo), a operação inteira é revertida (`rollback`), garantindo que não haja dados inconsistentes no banco.
+*   **Lógica Encapsulada:** As regras (ex: "usuário pode emprestar?") são encapsuladas dentro das próprias entidades, tornando o código mais limpo e orientado a objetos.
 
-O projeto utiliza **Docker Compose** para configurar todo o ambiente (API + Banco de Dados) com um único comando.
+<details>
+<summary>📄 <strong>Clique para ver a Documentação Interativa da API (Swagger UI)</strong></summary>
+<br />
 
-1.  **Clone o repositório**:
+<p align="center">
+  <img src="img/swagger-ui.png" width="750" alt="Swagger UI" />
+</p>
+<p align="center">
+  <em>Todos os endpoints, DTOs e requisitos de segurança estão documentados e são testáveis em tempo real.</em>
+</p>
+
+</details>
+
+---
+
+## ✨ Funcionalidades Principais
+
+#### 👨‍💼 Módulo do Administrador (`ROLE_ADMIN`)
+*   **Gestão de Usuários:** CRUD completo de usuários, incluindo listagem, busca por ID, bloqueio/desbloqueio manual e alteração de nível de acesso (`role`).
+*   **Gestão do Acervo:** Cadastro e remoção de livros do sistema.
+
+#### 👨‍🎓 Módulo do Usuário (`ROLE_USER`)
+*   **Autosserviço:** Cadastro, login e um endpoint para que o próprio usuário possa "pagar" suas multas e se desbloquear.
+*   **Consulta de Livros:** Acesso à lista de livros disponíveis para empréstimo.
+*   **Fluxo de Empréstimo:** Capacidade de realizar empréstimos e devoluções.
+
+---
+
+## 🛠️ Stack Tecnológica e Engenharia
+
+*   **Linguagem:** Java (JDK 21).
+*   **Framework Core:** Spring Boot 3.4+.
+*   **Segurança:** Spring Security com autenticação JWT (via `auth0/java-jwt`).
+*   **Persistência:** Spring Data JPA / Hibernate com otimizações de performance (índices `UNIQUE` em `cpf` e `email`).
+*   **Banco de Dados:** MySQL.
+*   **Infraestrutura:** Docker e Docker Compose para um ambiente de desenvolvimento e produção consistente.
+*   **Documentação:** Swagger UI (OpenAPI 3).
+
+---
+
+## 🚀 Como Executar o Projeto
+
+1.  **Clone o repositório:**
     ```bash
-    git clone [https://github.com/gu-pereira/api-libary.git](https://github.com/gu-pereira/api-libary.git)
+    git clone https://github.com/gu-pereira/api-libary.git
     cd api-libary
     ```
-
-2.  **Suba os containers**:
+2.  **Inicie o ambiente com Docker:**
+    O `docker-compose.yml` possui um `healthcheck` que garante que a API só inicie após o banco de dados estar 100% operacional.
     ```bash
     docker-compose up --build
     ```
-
-3.  **Acesse a documentação**:
-    Abra `http://localhost:8080/swagger-ui/index.html` para testar os endpoints.
+3.  **Acesse a documentação** e comece a testar: `http://localhost:8080/swagger-ui.html`
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
-* **Java 21** & **Spring Boot 3**
-* **Spring Security** & **JWT**
-* **Spring Data JPA** & **MySQL**
-* **Docker** & **Docker Compose**
-* **JUnit 5** & **Mockito**
-* **Swagger (OpenAPI 3)**
+## 📄 Licença
+
+Este projeto está sob a licença MIT. Consulte o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+---
+<p align="center">
+  Desenvolvido por <strong>Gustavo Pereira</strong>
+</p>
+<p align="center">
+  <em>"A elegância em software não é a ausência de complexidade, mas a sua maestria. É sobre construir sistemas que são não apenas funcionais, mas fundamentalmente sólidos."</em>
+</p>
