@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,5 +32,30 @@ public class UsuarioController {
     public ResponseEntity<UsuarioResponseDTO> buscarUsuarioPorId(@PathVariable Long id) {
         UsuarioResponseDTO usuario = usuarioService.buscarPorId(id);
         return ResponseEntity.ok(usuario);
+    }
+
+    @PostMapping("/{id}/bloquear")
+    public ResponseEntity<Void> bloquearUsuario(@PathVariable Long id) {
+        usuarioService.bloquear(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/desbloquear")
+    public ResponseEntity<Void> desbloquearUsuario(@PathVariable Long id) {
+        usuarioService.desbloquear(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}/role")
+    public ResponseEntity<Void> atualizarRole(@PathVariable Long id, @RequestBody @Valid RoleUpdateRequestDTO dto) {
+        usuarioService.atualizarRole(id, dto.novaRole());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/me/pagar-multa")
+    public ResponseEntity<Void> pagarMinhaMulta(Authentication authentication) {
+        Usuario usuarioAutenticado = (Usuario) authentication.getPrincipal();
+        usuarioService.pagarMinhaMulta(usuarioAutenticado);
+        return ResponseEntity.noContent().build();
     }
 }

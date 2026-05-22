@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
-    private final PasswordEncoder passwordEncoder; // Injeção do Bean criado acima
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public UsuarioResponseDTO cadastrar(UsuarioRequestDTO dto) {
@@ -34,15 +34,6 @@ public class UsuarioService {
         return new UsuarioResponseDTO(salvo);
     }
 
-    @Transactional
-    public void pagarMulta(Long usuarioId) {
-        Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new NegocioException("Usuário não encontrado"));
-
-        usuario.setSaldoDevedor(BigDecimal.ZERO);
-        usuario.setBloqueado(false); // Desbloqueia após pagamento
-    }
-
     public List<UsuarioResponseDTO> listarTodos() {
         return usuarioRepository.findAll()
                 .stream()
@@ -54,5 +45,44 @@ public class UsuarioService {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new NegocioException("Usuário não encontrado com o ID: " + id));
         return new UsuarioResponseDTO(usuario);
+    }
+
+    @Transactional
+    public void bloquear(Long id) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new NegocioException("Usuário não encontrado com o ID: " + id));
+        usuario.setBloqueado(true);
+        usuarioRepository.save(usuario);
+    }
+
+    @Transactional
+    public void desbloquear(Long id) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new NegocioException("Usuário não encontrado com o ID: " + id));
+        usuario.setBloqueado(false);
+        usuario.setSaldoDevedor(BigDecimal.ZERO);
+        usuarioRepository.save(usuario);
+    }
+
+    @Transactional
+    public void atualizarRole(Long id, Role novaRole) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new NegocioException("Usuário não encontrado com o ID: " + id));
+        usuario.setRole(novaRole);
+        usuarioRepository.save(usuario);
+    }
+
+    @Transactional
+    public void pagarMinhaMulta(Usuario usuario) {
+        if (!usuario.isBloqueado() && usuario.getSaldoDevedor().compareTo(BigDecimal.ZERO) == 0) {
+            throw new NegocioException("Usuário não possui multas ou bloqueios pendentes.");
+        }
+
+        // Em um sistema real, aqui ocorreria a integração com um gateway de pagamento.
+        // Como estamos simulando, simplesmente quitamos a dívida.
+
+        usuario.setSaldoDevedor(BigDecimal.ZERO);
+        usuario.setBloqueado(false);
+        usuarioRepository.save(usuario);
     }
 }

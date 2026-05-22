@@ -24,24 +24,28 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .csrf(csrf -> csrf.disable()) // Desabilita CSRF para APIs Stateless
+                .csrf(csrf -> csrf.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // Rotas Públicas (Cadastro e Login)
+                        // Rotas Públicas
                         .requestMatchers(HttpMethod.POST, "/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()// Documentação Swagger Pública
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
 
-                        // Rotas de ADMIN (ex: cadastrar livros)
-                    .requestMatchers(HttpMethod.GET, "/usuarios", "/usuarios/{id}").hasRole("ADMIN")
+                        // Rotas de ADMIN
+                        .requestMatchers(HttpMethod.GET, "/usuarios/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/usuarios/{id}/bloquear", "/usuarios/{id}/desbloquear").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/usuarios/{id}/role").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/livros").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/livros/**").hasRole("ADMIN")
 
-                        // Rotas de USER (ex: pegar livro emprestado)
+                        // Rotas de USER
+                        .requestMatchers(HttpMethod.POST, "/usuarios/me/pagar-multa").hasRole("USER")
                         .requestMatchers(HttpMethod.POST, "/emprestimos/**").hasRole("USER")
                         .requestMatchers(HttpMethod.GET, "/livros/disponiveis").hasRole("USER")
 
-                        .anyRequest().authenticated()// Todas as outras exigem Token JWT
+                        // Outras rotas autenticadas
+                        .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
