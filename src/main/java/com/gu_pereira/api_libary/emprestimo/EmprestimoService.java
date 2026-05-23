@@ -33,13 +33,17 @@ public class EmprestimoService {
 
     @Transactional
     public void realizarEmprestimo(Long usuarioId, Long livroId) {
+        // 1. Busca e valida o usuário PRIMEIRO (Fail-Fast)
         Usuario usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new NegocioException("Usuário não encontrado"));
+        usuario.validarSePodeEmprestar(limiteLivros);
+
+        // 2. Somente se o usuário for válido, busca e valida o livro
         Livro livro = livroRepository.findById(livroId)
                 .orElseThrow(() -> new NegocioException("Livro não encontrado"));
-
-        usuario.validarSePodeEmprestar(limiteLivros);
         livro.emprestar();
+
+        // 3. Atualiza o estado e salva o empréstimo
         usuario.registrarEmprestimo();
 
         Emprestimo novoEmprestimo = new Emprestimo();
