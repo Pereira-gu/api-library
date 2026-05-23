@@ -39,7 +39,6 @@ class EmprestimoServiceTest {
 
     @BeforeEach
     void setup() {
-        // Injeta os valores que seriam carregados do application.properties
         ReflectionTestUtils.setField(emprestimoService, "limiteLivros", 3);
         ReflectionTestUtils.setField(emprestimoService, "prazoDias", 7);
         ReflectionTestUtils.setField(emprestimoService, "multaDiaria", new BigDecimal("2.00"));
@@ -91,6 +90,7 @@ class EmprestimoServiceTest {
 
         assertEquals("Usuário bloqueado! Regularize suas multas ou atrasos.", exception.getMessage());
         verify(emprestimoRepository, never()).save(any());
+        verify(livroRepository, never()).findById(any()); // Garante que a busca do livro nunca ocorreu
     }
 
     @Test
@@ -125,26 +125,20 @@ class EmprestimoServiceTest {
     void realizarEmprestimo_Falha_LimiteAtingido() {
         // Arrange
         Long usuarioId = 1L;
-        Long livroId = 1L;
-
         Usuario usuario = new Usuario();
         usuario.setId(usuarioId);
         usuario.setBloqueado(false);
-        usuario.setLivrosEmprestados(3); // Usuário já tem 3 livros (o limite)
-
-        Livro livro = new Livro();
-        livro.setId(livroId);
-        livro.setStatus(StatusLivro.DISPONIVEL);
+        usuario.setLivrosEmprestados(3);
 
         when(usuarioRepository.findById(usuarioId)).thenReturn(Optional.of(usuario));
-        when(livroRepository.findById(livroId)).thenReturn(Optional.of(livro));
 
         // Act & Assert
         NegocioException exception = assertThrows(NegocioException.class, () -> {
-            emprestimoService.realizarEmprestimo(usuarioId, livroId);
+            emprestimoService.realizarEmprestimo(usuarioId, 1L);
         });
 
         assertEquals("Limite de 3 livros atingido!", exception.getMessage());
         verify(emprestimoRepository, never()).save(any());
+        verify(livroRepository, never()).findById(any()); // Garante que a busca do livro nunca ocorreu
     }
 }
