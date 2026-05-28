@@ -17,6 +17,15 @@ public class LivroService {
         return livroRepository.save(livro);
     }
 
+    public List<Livro> listarTodos() {
+        return livroRepository.findAll();
+    }
+
+    public Livro buscarPorId(Long id) {
+        return livroRepository.findById(id)
+                .orElseThrow(() -> new NegocioException("Livro não encontrado"));
+    }
+
     public List<Livro> listarDisponiveis() {
         return livroRepository.findByStatus(StatusLivro.DISPONIVEL);
     }
