@@ -3,10 +3,16 @@ package com.gu_pereira.api_libary.livro;
 import com.gu_pereira.api_libary.infrastructure.exceptions.NegocioException;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "livros")
 @Data
+@EntityListeners(AuditingEntityListener.class)
 public class Livro {
 
     @Id
@@ -26,6 +32,14 @@ public class Livro {
     private StatusLivro status = StatusLivro.DISPONIVEL;
 
     private String categoria;
+
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime dataCriacao;
+
+    @LastModifiedDate
+    @Column(nullable = false)
+    private LocalDateTime dataAtualizacao;
 
     public void validarSePodeSerEmprestado() {
         if (status != StatusLivro.DISPONIVEL) {
