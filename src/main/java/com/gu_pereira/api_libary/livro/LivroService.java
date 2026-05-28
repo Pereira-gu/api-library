@@ -8,10 +8,11 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true) // Anotação em nível de classe
 public class LivroService {
     private final LivroRepository livroRepository;
 
-    @Transactional
+    @Transactional // Sobrescreve o readOnly = true da classe
     public Livro salvar(Livro livro) {
         return livroRepository.save(livro);
     }
@@ -20,7 +21,7 @@ public class LivroService {
         return livroRepository.findByStatus(StatusLivro.DISPONIVEL);
     }
 
-    @Transactional
+    @Transactional // Sobrescreve o readOnly = true da classe
     public void desativarLivro(Long id) {
         Livro livro = livroRepository.findById(id)
                 .orElseThrow(() -> new NegocioException("Livro não encontrado"));
