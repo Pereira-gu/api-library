@@ -31,7 +31,7 @@ public class LivroService {
             throw new NegocioException("Não é possível desativar um livro que está emprestado!");
         }
 
-        livro.setStatus(StatusLivro.OFFLINE);
-        livroRepository.save(livro);
+        // Usa o método delete para acionar o @SQLDelete do Hibernate
+        livroRepository.delete(livro);
     }
 }
