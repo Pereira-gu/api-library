@@ -3,6 +3,8 @@ package com.gu_pereira.api_libary.livro;
 import com.gu_pereira.api_libary.infrastructure.exceptions.NegocioException;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -13,6 +15,8 @@ import java.time.LocalDateTime;
 @Table(name = "livros")
 @Data
 @EntityListeners(AuditingEntityListener.class)
+@SQLDelete(sql = "UPDATE livros SET status = 'OFFLINE' WHERE id = ?")
+@SQLRestriction("status <> 'OFFLINE'")
 public class Livro {
 
     @Id
